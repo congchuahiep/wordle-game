@@ -1,15 +1,15 @@
 import { motion } from "motion/react";
-import { useWordleStore } from "@/stores";
 import { cn } from "@/lib/utils";
+import { useWordleStore } from "@/stores";
 
 interface CompletedRowProps {
   turn: number;
 }
 
 const colors = {
-  correct: "oklch(62.7% 0.194 149.214)", // green-500
-  present: "oklch(79.5% 0.184 86.047)", // yellow-500
-  absent: "oklch(43.9% 0 0)", // gray-600
+  correct: "oklch(62.7% 0.194 149.214)",
+  present: "oklch(79.5% 0.184 86.047)",
+  absent: "oklch(55.6% 0 0)",
 };
 
 /**
@@ -19,14 +19,21 @@ const colors = {
  * @returns
  */
 export default function CompletedRow({ turn }: CompletedRowProps) {
-  const { guesses, settings } = useWordleStore();
+  const guesses = useWordleStore((state) => state.guesses);
+  const settings = useWordleStore((state) => state.settings);
 
+  const guess = guesses[turn];
+
+  const statuses = getGuessStatuses(guess, settings.solution);
   const splitGuess = guesses[turn].split("");
 
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div
+      className="grid gap-2"
+      style={{ gridTemplateColumns: `repeat(${settings.wordLength}, 1fr)` }}
+    >
       {splitGuess.map((char, i) => {
-        const status = getStatus(char, i, settings.solution);
+        const status = statuses[i];
         const targetColor = colors[status as keyof typeof colors];
 
         return (
@@ -56,8 +63,8 @@ export default function CompletedRow({ turn }: CompletedRowProps) {
                 targetColor,
               ],
               borderColor: [
-                "oklch(55.6% 0 0 / 100%)",
-                "oklch(55.6% 0 0 / 100%)",
+                "oklch(55.6% 0 0)",
+                "oklch(55.6% 0 0)",
                 targetColor,
               ],
             }}
@@ -71,11 +78,31 @@ export default function CompletedRow({ turn }: CompletedRowProps) {
   );
 }
 
-/**
- * Lấy trạng thái của một ký tự trong từ đoán
- */
-function getStatus(char: string, index: number, solution: string) {
-  if (char === solution[index]) return "correct";
-  if (solution.includes(char)) return "present";
-  return "absent";
+function getGuessStatuses(guess: string, solution: string) {
+  const guessChars = guess.split("");
+  const solutionChars = solution.split("");
+  const statuses = Array(guess.length).fill("absent");
+
+  // PASS 1: Tìm những chữ đúng vị trí (CORRECT - Xanh)
+  guessChars.forEach((char, i) => {
+    if (char === solutionChars[i]) {
+      statuses[i] = "correct";
+      solutionChars[i] = null as any; // Đánh dấu là đã xử lý trong đáp án
+      guessChars[i] = null as any; // Đánh dấu là đã xử lý trong từ đoán
+    }
+  });
+
+  // PASS 2: Tìm những chữ sai vị trí (PRESENT - Vàng)
+  guessChars.forEach((char, i) => {
+    // Chỉ xét những ô chưa phải là 'correct' (những ô null ở guessChars[i] là đã correct rồi)
+    if (char !== null && statuses[i] !== "correct") {
+      const indexInSolution = solutionChars.indexOf(char);
+      if (indexInSolution > -1) {
+        statuses[i] = "present";
+        solutionChars[indexInSolution] = null as any; // "Dùng" chữ cái này trong đáp án để không dùng lại nữa
+      }
+    }
+  });
+
+  return statuses;
 }

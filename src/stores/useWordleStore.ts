@@ -1,70 +1,86 @@
-import { create } from "zustand";
-import { MAX_GUESSES, SOLUTION, WORD_LENGTH } from "@/configs";
-import type { GameStatus, WordleActions, WordleState } from "@/types";
+import { useContext } from "react";
+import { createStore, useStore } from "zustand";
+import { WordleContext } from "@/contexts";
+import type {
+  GameSetting,
+  GameStatus,
+  WordleActions,
+  WordleState,
+} from "@/types";
 
-const useWordleStore = create<WordleState & WordleActions>((set, get) => ({
-  settings: {
-    solution: SOLUTION,
-    wordLength: WORD_LENGTH,
-    maxGuesses: MAX_GUESSES,
-  },
+type WordleStore = WordleState & WordleActions;
 
-  guesses: [],
-  currentGuess: "",
-  gameStatus: "playing",
-  isShake: false,
+export const createWordleStore = (initSettings: GameSetting) =>
+  createStore<WordleStore>((set, get) => ({
+    settings: initSettings,
 
-  handleKeyup: (key) => {
-    const { gameStatus, currentGuess, guesses, settings } = get();
+    guesses: [],
+    currentGuess: "",
+    gameStatus: "playing",
+    isShake: false,
 
-    if (gameStatus !== "playing") return;
+    handleKeyup: (key) => {
+      const { gameStatus, currentGuess, guesses, settings } = get();
 
-    // Xử lý Enter
-    if (key === "Enter") {
-      if (currentGuess.length !== settings.wordLength) {
-        // Kích hoạt rung lắc nếu chưa đủ chữ
-        set({ isShake: true });
-        return;
+      if (gameStatus !== "playing") return;
+
+      // Xử lý Enter
+      if (key === "Enter") {
+        if (currentGuess.length !== settings.wordLength) {
+          // Kích hoạt rung lắc nếu chưa đủ chữ
+          set({ isShake: true });
+          return;
+        }
+
+        const newGuesses = [...guesses, currentGuess];
+        let newStatus: GameStatus = "playing";
+
+        if (currentGuess === settings.solution) {
+          newStatus = "won";
+        } else if (newGuesses.length >= settings.maxGuesses) {
+          newStatus = "lost";
+        }
+
+        set({
+          guesses: newGuesses,
+          currentGuess: "",
+          gameStatus: newStatus,
+        });
       }
 
-      const newGuesses = [...guesses, currentGuess];
-      let newStatus: GameStatus = "playing";
-
-      if (currentGuess === settings.solution) {
-        newStatus = "won";
-      } else if (newGuesses.length >= settings.maxGuesses) {
-        newStatus = "lost";
+      // Xử lý Backspace
+      else if (key === "Backspace") {
+        set({ currentGuess: currentGuess.slice(0, -1) });
       }
 
+      // Xử lý nhập chữ cái (A-Z)
+      else if (/^[a-zA-Z]$/.test(key)) {
+        if (currentGuess.length < settings.wordLength) {
+          set({ currentGuess: currentGuess + key.toUpperCase() });
+        }
+      }
+    },
+
+    resetShake: () => set({ isShake: false }),
+
+    resetGame: () =>
       set({
-        guesses: newGuesses,
+        guesses: [],
         currentGuess: "",
-        gameStatus: newStatus,
-      });
-    }
+        gameStatus: "playing",
+        isShake: false,
+      }),
+  }));
 
-    // Xử lý Backspace
-    else if (key === "Backspace") {
-      set({ currentGuess: currentGuess.slice(0, -1) });
-    }
+export function useWordleStore<T>(selector?: (state: WordleStore) => T): T {
+  const store = useContext(WordleContext);
 
-    // Xử lý nhập chữ cái (A-Z)
-    else if (/^[a-zA-Z]$/.test(key)) {
-      if (currentGuess.length < settings.wordLength) {
-        set({ currentGuess: currentGuess + key.toUpperCase() });
-      }
-    }
-  },
+  if (!store) {
+    throw new Error("Missing WordleProvider");
+  }
 
-  resetShake: () => set({ isShake: false }),
-
-  resetGame: () =>
-    set({
-      guesses: [],
-      currentGuess: "",
-      gameStatus: "playing",
-      isShake: false,
-    }),
-}));
+  // Nếu có selector thì trả về phần data đó, nếu không thì trả về full state
+  return useStore(store, selector);
+}
 
 export default useWordleStore;

@@ -3,7 +3,9 @@ import { cn } from "@/lib/utils";
 import { useWordleStore } from "@/stores";
 
 export default function CurrentRow() {
-  const { currentGuess, isShake, settings } = useWordleStore();
+  const currentGuess = useWordleStore((state) => state.currentGuess);
+  const isShake = useWordleStore((state) => state.isShake);
+  const settings = useWordleStore((state) => state.settings);
 
   const splitGuess = currentGuess.split("");
   const emptyCells = Array(settings.wordLength - splitGuess.length).fill("");
@@ -15,7 +17,8 @@ export default function CurrentRow() {
 
   return (
     <motion.div
-      className="grid grid-cols-5 gap-2"
+      className="grid gap-2"
+      style={{ gridTemplateColumns: `repeat(${settings.wordLength}, 1fr)` }}
       variants={shakeVariants}
       animate={isShake ? "shake" : "idle"}
     >

@@ -2,14 +2,20 @@
 "use client";
 
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { useWordleStore } from "@/stores";
 import CompletedRow from "./CompleteRow";
 import CurrentRow from "./CurrentRow";
 import EmptyRow from "./EmptyRow";
+import Keyboard from "./Keyboard";
 
 export default function WordleGame() {
-  const { guesses, settings, gameStatus, isShake, handleKeyup, resetShake } =
-    useWordleStore();
+  const guesses = useWordleStore((state) => state.guesses);
+  const gameStatus = useWordleStore((state) => state.gameStatus);
+  const handleKeyup = useWordleStore((state) => state.handleKeyup);
+  const isShake = useWordleStore((state) => state.isShake);
+  const settings = useWordleStore((state) => state.settings);
+  const resetShake = useWordleStore((state) => state.resetShake);
 
   /**
    * Đăng ký sự kiện bàn phím
@@ -42,7 +48,14 @@ export default function WordleGame() {
   }, [isShake, resetShake]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center font-bold">
+    <section
+      className={cn(
+        "h-full flex flex-col items-center justify-between font-bold",
+        "gap-4 py-12",
+      )}
+    >
+      <h1 className="text-4xl font-bold text-center">Wordle Game</h1>
+
       <div className="grid grid-rows-6 gap-2 p-4">
         {[...Array(settings.maxGuesses)].map((_, i) => {
           switch (true) {
@@ -61,9 +74,14 @@ export default function WordleGame() {
         })}
       </div>
 
+      {/* Phần bàn phím ảo */}
+      <div className="w-full px-2">
+        <Keyboard />
+      </div>
+
       <div className="mt-8 text-gray-500 text-sm">
         Trạng thái: {gameStatus.toUpperCase()}
       </div>
-    </div>
+    </section>
   );
 }

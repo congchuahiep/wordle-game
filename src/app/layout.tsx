@@ -21,7 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("antialiased", beVietnamPro.variable)}>
+      <body
+        className={cn(
+          "antialiased w-full h-screen flex flex-col items-center",
+          beVietnamPro.variable,
+        )}
+      >
         {children}
       </body>
     </html>
