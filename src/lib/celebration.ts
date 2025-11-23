@@ -2,50 +2,6 @@
 
 import confetti from "canvas-confetti";
 
-const unicorn = confetti.shapeFromText({ text: "🦄", scalar: 5 });
-const laugh1 = confetti.shapeFromText({ text: "🤪", scalar: 5 });
-const laugh2 = confetti.shapeFromText({ text: "😁", scalar: 5 });
-const laugh3 = confetti.shapeFromText({ text: "😆", scalar: 5 });
-const laugh4 = confetti.shapeFromText({ text: "🤣", scalar: 5 });
-const confettiEmoji = confetti.shapeFromText({ text: "🎊", scalar: 5 });
-const nooo = confetti.shapeFromText({ text: "😵", scalar: 5 });
-const dizzy = confetti.shapeFromText({ text: "😵‍💫", scalar: 5 });
-const haiz = confetti.shapeFromText({ text: "😤", scalar: 5 });
-const angry = confetti.shapeFromText({ text: "😡", scalar: 5 });
-const spam = confetti.shapeFromText({ text: "🤬", scalar: 5 });
-const cry = confetti.shapeFromText({ text: "😭", scalar: 5 });
-const sad = confetti.shapeFromText({ text: "🥹", scalar: 5 });
-const nohope = confetti.shapeFromText({ text: "🥲", scalar: 5 });
-const nause = confetti.shapeFromText({ text: "🤢", scalar: 5 });
-const vomit = confetti.shapeFromText({ text: "🤮", scalar: 5 });
-
-const nahShapes = [
-  nooo,
-  dizzy,
-  haiz,
-  laugh2,
-  laugh3,
-  sad,
-  nohope,
-  nause,
-  vomit,
-];
-
-const goodShapes = [unicorn, laugh1, laugh2, laugh3, laugh4, confettiEmoji];
-
-const badShapes = [
-  nooo,
-  dizzy,
-  haiz,
-  angry,
-  spam,
-  cry,
-  sad,
-  nohope,
-  nause,
-  vomit,
-];
-
 const nahSoundFiles = [
   "/sound-effect/guess_1.mp3",
   "/sound-effect/guess_2.mp3",
@@ -55,6 +11,50 @@ const nahSoundFiles = [
 ];
 
 export const celebration = (mode: "good" | "bad" | "nah" = "nah") => {
+  const unicorn = confetti.shapeFromText({ text: "🦄", scalar: 5 });
+  const laugh1 = confetti.shapeFromText({ text: "🤪", scalar: 5 });
+  const laugh2 = confetti.shapeFromText({ text: "😁", scalar: 5 });
+  const laugh3 = confetti.shapeFromText({ text: "😆", scalar: 5 });
+  const laugh4 = confetti.shapeFromText({ text: "🤣", scalar: 5 });
+  const confettiEmoji = confetti.shapeFromText({ text: "🎊", scalar: 5 });
+  const nooo = confetti.shapeFromText({ text: "😵", scalar: 5 });
+  const dizzy = confetti.shapeFromText({ text: "😵‍💫", scalar: 5 });
+  const haiz = confetti.shapeFromText({ text: "😤", scalar: 5 });
+  const angry = confetti.shapeFromText({ text: "😡", scalar: 5 });
+  const spam = confetti.shapeFromText({ text: "🤬", scalar: 5 });
+  const cry = confetti.shapeFromText({ text: "😭", scalar: 5 });
+  const sad = confetti.shapeFromText({ text: "🥹", scalar: 5 });
+  const nohope = confetti.shapeFromText({ text: "🥲", scalar: 5 });
+  const nause = confetti.shapeFromText({ text: "🤢", scalar: 5 });
+  const vomit = confetti.shapeFromText({ text: "🤮", scalar: 5 });
+
+  const nahShapes = [
+    nooo,
+    dizzy,
+    haiz,
+    laugh2,
+    laugh3,
+    sad,
+    nohope,
+    nause,
+    vomit,
+  ];
+
+  const goodShapes = [unicorn, laugh1, laugh2, laugh3, laugh4, confettiEmoji];
+
+  const badShapes = [
+    nooo,
+    dizzy,
+    haiz,
+    angry,
+    spam,
+    cry,
+    sad,
+    nohope,
+    nause,
+    vomit,
+  ];
+
   const randomIndex = Math.floor(Math.random() * nahSoundFiles.length);
   const audio = new Audio(
     mode === "good"
