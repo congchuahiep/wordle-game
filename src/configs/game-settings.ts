@@ -1,0 +1,5 @@
+const SOLUTION = "BOARD";
+const WORD_LENGTH = 5;
+const MAX_GUESSES = 6;
+
+export { SOLUTION, WORD_LENGTH, MAX_GUESSES };
