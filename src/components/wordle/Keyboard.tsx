@@ -86,7 +86,7 @@ export default function Keyboard() {
                 key={key}
                 onClick={() => onKeyClick(key)}
                 className={cn(
-                  "h-14 flex items-center justify-center rounded font-bold",
+                  "h-10 2xl:h-14 flex items-center justify-center rounded font-bold",
                   "text-sm select-none transition-colors duration-200",
                   isSpecial ? "px-3 text-xs" : "flex-1 max-w-[45px] text-lg",
                 )}

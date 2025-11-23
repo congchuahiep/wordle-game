@@ -1,6 +1,9 @@
+"use client";
+
 import { useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { WordleContext } from "@/contexts";
+import { celebration } from "@/lib/celebration";
 import type {
   GameSetting,
   GameStatus,
@@ -41,6 +44,10 @@ export const createWordleStore = (initSettings: GameSetting) =>
           newStatus = "lost";
         }
 
+        celebration(
+          newStatus === "won" ? "good" : newStatus === "lost" ? "bad" : "nah",
+        );
+
         set({
           guesses: newGuesses,
           currentGuess: "",
@@ -72,7 +79,7 @@ export const createWordleStore = (initSettings: GameSetting) =>
       }),
   }));
 
-export function useWordleStore<T>(selector?: (state: WordleStore) => T): T {
+export function useWordleStore<T>(selector: (state: WordleStore) => T): T {
   const store = useContext(WordleContext);
 
   if (!store) {

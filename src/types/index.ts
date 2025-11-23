@@ -1,3 +1,4 @@
+export type { default as CellStatus } from "./CellStatus";
 export type { default as GameSetting } from "./GameSetting";
 export type { default as GameStatus } from "./GameStatus";
 export type { default as WordleActions } from "./WordleActions";

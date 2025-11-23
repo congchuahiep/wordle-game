@@ -1,15 +1,17 @@
 import { motion } from "motion/react";
+import { guessStatuses } from "@/lib/guessStatus";
 import { cn } from "@/lib/utils";
 import { useWordleStore } from "@/stores";
+import type { CellStatus } from "@/types";
 
 interface CompletedRowProps {
   turn: number;
 }
 
-const colors = {
-  correct: "oklch(62.7% 0.194 149.214)",
-  present: "oklch(79.5% 0.184 86.047)",
-  absent: "oklch(55.6% 0 0)",
+const colors: Record<CellStatus, string> = {
+  G: "oklch(62.7% 0.194 149.214)", // Green
+  Y: "oklch(79.5% 0.184 86.047)", // Yellow
+  X: "oklch(55.6% 0 0)", // Grey
 };
 
 /**
@@ -24,7 +26,7 @@ export default function CompletedRow({ turn }: CompletedRowProps) {
 
   const guess = guesses[turn];
 
-  const statuses = getGuessStatuses(guess, settings.solution);
+  const statuses = guessStatuses(guess, settings.solution);
   const splitGuess = guesses[turn].split("");
 
   return (
@@ -76,33 +78,4 @@ export default function CompletedRow({ turn }: CompletedRowProps) {
       })}
     </div>
   );
-}
-
-function getGuessStatuses(guess: string, solution: string) {
-  const guessChars = guess.split("");
-  const solutionChars = solution.split("");
-  const statuses = Array(guess.length).fill("absent");
-
-  // PASS 1: Tìm những chữ đúng vị trí (CORRECT - Xanh)
-  guessChars.forEach((char, i) => {
-    if (char === solutionChars[i]) {
-      statuses[i] = "correct";
-      solutionChars[i] = null as any; // Đánh dấu là đã xử lý trong đáp án
-      guessChars[i] = null as any; // Đánh dấu là đã xử lý trong từ đoán
-    }
-  });
-
-  // PASS 2: Tìm những chữ sai vị trí (PRESENT - Vàng)
-  guessChars.forEach((char, i) => {
-    // Chỉ xét những ô chưa phải là 'correct' (những ô null ở guessChars[i] là đã correct rồi)
-    if (char !== null && statuses[i] !== "correct") {
-      const indexInSolution = solutionChars.indexOf(char);
-      if (indexInSolution > -1) {
-        statuses[i] = "present";
-        solutionChars[indexInSolution] = null as any; // "Dùng" chữ cái này trong đáp án để không dùng lại nữa
-      }
-    }
-  });
-
-  return statuses;
 }

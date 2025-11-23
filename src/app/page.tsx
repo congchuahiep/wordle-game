@@ -38,9 +38,9 @@ type FormValues = z.infer<typeof formSchema>;
 export default function Home() {
   const router = useRouter();
 
-  // 2. Khởi tạo form
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    // biome-ignore lint/suspicious/noExplicitAny: Kệ
+    resolver: zodResolver(formSchema as any),
     defaultValues: {
       wordLength: 5,
       maxGuesses: 6,
@@ -48,7 +48,6 @@ export default function Home() {
     },
   });
 
-  // 3. Xử lý Submit
   function onSubmit(values: FormValues) {
     const encryptedSolution = encodeSolution(values.solution.toUpperCase());
 
