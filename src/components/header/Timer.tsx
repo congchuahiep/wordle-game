@@ -1,6 +1,7 @@
 "use client";
 
-import { Clock, PauseCircleIcon } from "lucide-react";
+import { ClockIcon, PauseCircleIcon, RotateCcwIcon } from "lucide-react";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { cn } from "@/lib/utils";
 import { useTimerStore } from "@/stores"; // Import store mới
 import { Button } from "../ui/button";
@@ -19,8 +20,9 @@ export default function Timer({ className }: { className?: string }) {
   const isRunning = useTimerStore((state) => state.isRunning);
   const stopTimer = useTimerStore((state) => state.stopTimer);
   const startTimer = useTimerStore((state) => state.startTimer);
+  const resetTimer = useTimerStore((state) => state.resetTimer);
 
-  const handleClick = () => {
+  const handlePause = () => {
     if (isRunning) {
       stopTimer();
     } else {
@@ -30,22 +32,27 @@ export default function Timer({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex items-center", className)}>
-      <Button
-        variant="ghost"
-        className={cn(
-          "py-2 rounded-full font-mono",
-          "cursor-pointer text-lg font-medium",
-          !isActivate && "hidden",
-        )}
-        onClick={handleClick}
-      >
-        {isRunning ? (
-          <Clock className="size-5" />
-        ) : (
-          <PauseCircleIcon className="size-5" />
-        )}
-        <span>{formatTime(timeElapsed)}</span>
-      </Button>
+      <ButtonGroup>
+        <Button
+          variant="outline"
+          className={cn(
+            "py-2 rounded-full font-mono",
+            "cursor-pointer text-lg font-medium",
+            !isActivate && "hidden",
+          )}
+          onClick={handlePause}
+        >
+          {isRunning ? (
+            <ClockIcon className="size-5" />
+          ) : (
+            <PauseCircleIcon className="size-5" />
+          )}
+          <span>{formatTime(timeElapsed)}</span>
+        </Button>
+        <Button variant="outline" className="rounded-full" onClick={resetTimer}>
+          <RotateCcwIcon />
+        </Button>
+      </ButtonGroup>
     </div>
   );
 }

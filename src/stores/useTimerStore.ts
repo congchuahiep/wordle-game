@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface TimerState {
   timeElapsed: number;
@@ -18,18 +19,20 @@ interface TimerState {
 /**
  * Store cho bộ đếm thời gian khi chơi
  */
-const useTimerStore = create<TimerState>((set) => ({
-  timeElapsed: 0,
-  isRunning: false,
-  isActivate: false,
+const useTimerStore = create<TimerState>()(
+  devtools((set) => ({
+    timeElapsed: 0,
+    isRunning: false,
+    isActivate: false,
 
-  tick: () => set((state) => ({ timeElapsed: state.timeElapsed + 1 })),
-  resetTimer: () => set({ timeElapsed: 0, isRunning: false }),
-  startTimer: () => set({ isRunning: true }),
-  stopTimer: () => set({ isRunning: false }),
+    tick: () => set((state) => ({ timeElapsed: state.timeElapsed + 1 })),
+    resetTimer: () => set({ timeElapsed: 0 }),
+    startTimer: () => set({ isRunning: true }),
+    stopTimer: () => set({ isRunning: false }),
 
-  activateTimer: () => set({ isActivate: true }),
-  terminateTimer: () => set({ isActivate: false }),
-}));
+    activateTimer: () => set({ isActivate: true }),
+    terminateTimer: () => set({ isActivate: false }),
+  })),
+);
 
 export default useTimerStore;
