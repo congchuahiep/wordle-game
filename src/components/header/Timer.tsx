@@ -32,13 +32,12 @@ export default function Timer({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex items-center", className)}>
-      <ButtonGroup>
+      <ButtonGroup className={cn(!isActivate && "hidden cursor-pointer")}>
         <Button
           variant="outline"
           className={cn(
             "py-2 rounded-full font-mono",
             "cursor-pointer text-lg font-medium",
-            !isActivate && "hidden",
           )}
           onClick={handlePause}
         >
