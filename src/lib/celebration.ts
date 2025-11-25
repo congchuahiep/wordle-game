@@ -7,7 +7,6 @@ const nahSoundFiles = [
   "/sound-effect/guess_2.mp3",
   "/sound-effect/guess_3.mp3",
   "/sound-effect/guess_4.mp3",
-  "/sound-effect/guess_5.mp3",
 ];
 
 export const celebration = (mode: "good" | "bad" | "nah" = "nah") => {
